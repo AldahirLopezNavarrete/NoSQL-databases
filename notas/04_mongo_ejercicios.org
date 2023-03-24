@@ -43,7 +43,7 @@ Vamos a responder las siguientes preguntas:
 1. Escribe una función find() para mostrar todos los documentos de la colección de restaurantes.
 
 #+begin_src js
-
+db.restaurants.find()
 #+end_src
 
 
