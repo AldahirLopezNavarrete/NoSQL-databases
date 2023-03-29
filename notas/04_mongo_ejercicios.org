@@ -180,44 +180,87 @@ db.restaurants.find(
 14. Escribe una función find() para encontrar el ID del restaurante, el nombre, el municipio y la cocina de aquellos restaurantes que contienen 'Wil' como las primeras tres letras de su nombre.
 
 #+begin_src js
-db.restaurants.find({nombre: {$regex: '^Wil'}},{})
-
+db.restaurants.find(
+  { "name": /^Wil/ },
+  { "_id": 1, "name": 1, "borough": 1, "cuisine": 1 }
+);
 #+end_src
 
 
 15. Escribe una función find() para encontrar el ID del restaurante, el nombre, el municipio y la cocina de aquellos restaurantes que contienen "ces" como las últimas tres letras de su nombre.
 
 #+begin_src js
+db.restaurants.find(
+  { "name": /ces$/ },
+  { "_id": 1, "name": 1, "borough": 1, "cuisine": 1 }
+);
 #+end_src
 
 
 16. Escribe una función find() para encontrar el ID del restaurante, el nombre, el municipio y la cocina de aquellos restaurantes que contienen 'Reg' como tres letras en algún lugar de su nombre.
 
 #+begin_src js
+db.restaurants.find(
+  { "name": /.*Reg.*/ },
+  { "_id": 1, "name": 1, "borough": 1, "cuisine": 1 }
+);
+
 #+end_src
 
 
 17. Escribe una función find() para encontrar los restaurantes que pertenecen al municipio del Bronx y que prepararon platos estadounidenses o chinos.
 
 #+begin_src js
+db.restaurants.find({ 
+    "borough": "Bronx", 
+    $or: [ 
+        { "cuisine": "American" }, 
+        { "cuisine": "Chinese" } 
+    ] 
+});
+
 #+end_src
 
 
-18. Escribe una función find() para encontrar la identificación del restaurante, el nombre, el municipio y la cocina de los restaurantes que pertenecen al municipio de Staten Island o Queens o Bronxor Brooklyn.
+18. Escribe una función find() para encontrar la identificación del restaurante, el nombre, el municipio y la cocina de los restaurantes que pertenecen al municipio de Staten Island o Queens o Bronx or Brooklyn.
 
 #+begin_src js
+db.restaurants.find({
+  $or: [
+     {borough:"Staten Island"},
+     {borough:"Queens"},
+     {borough:"Bronx"},
+     {borough:"Brooklyn"}
+  ]},{ "_id": 1, "name": 1, "borough": 1, "cuisine": 1 });
+  
+
 #+end_src
 
 
 19. Escribe una función find() para encontrar el ID del restaurante, el nombre, el municipio y la cocina de aquellos restaurantes que no pertenecen al municipio de Staten Island o Queens o Bronxor Brooklyn.
 
 #+begin_src js
+
+db.restaurants.find({
+   $and: [
+     {borough:{$ne:"Staten Island"}},
+     {borough:{$ne:"Queens"}},
+     {borough:{$ne:"Bronx"}},
+     {borough:{$ne:"Brooklyn"}}
+  ]},{ "_id": 1, "name": 1, "borough": 1, "cuisine": 1 }); 
+);
+
 #+end_src
 
 
 20. Escribe una función find() para encontrar el ID del restaurante, el nombre, el municipio y la cocina de aquellos restaurantes que obtuvieron una puntuación que no sea superior a 10.
 
 #+begin_src js
+db.restaurants.aggregate([
+  { $unwind : "$grades" }, 
+  { $match : { "grades.score":{$lt: 10}}}, 
+  { $project : { _id: 1, name: 1, borough: 1, cuisine:1 }}
+]);
 #+end_src
 
 
