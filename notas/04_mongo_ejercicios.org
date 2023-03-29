@@ -396,18 +396,24 @@ db.restaurants.find({"address.coord": {$type: "double"}});
 
 #+begin_src js
 
+db.restaurants.find({"grades.score": {$mod: [7, 0]}}, {_id: 1, name: 1, "grades.score": 1})
+
 #+end_src
 
 
-31. Escribe una función find() para encontrar el nombre del restaurante, el municipio, la longitud y la actitud y la cocina de aquellos restaurantes que contienen "mon" como tres letras en algún lugar de su nombre.
-
+31. Escribe una función find() para encontrar el nombre del restaurante, el municipio, la longitud y la altitud y la cocina de aquellos restaurantes que contienen "mon" como tres letras en algún lugar de su nombre.
 #+begin_src js
+
+db.restaurants.find({name: { $regex: /mon/i }},{_id: 1, name: 1, borough:1, "address.coord":1, cuisine:1});
+
 #+end_src
 
 
 32. Escribe una función find() para encontrar el nombre del restaurante, el distrito, la longitud y la latitud y la cocina de aquellos restaurantes que contienen 'Mad' como las primeras tres letras de su nombre.
 
 #+begin_src js
+db.restaurants.find({name: {$regex: /^Mad/i}},{_id:0,name:1, borough:1, "address.coord":1,cuisine:1})
+
 #+end_src
 
 * PT 2.
