@@ -688,6 +688,26 @@ Usando la colección de ~tweets~ en la BD ~trainingsessions~ vamos a responder l
 #+end_src
 
 1. Qué idiomas base son los que más tuitean con hashtags? Cuál con URLs? Y con @?
+db.collection.aggregate([
+    {$match: {"entities.hashtags": {$exists: true}}},
+    {$group: {_id: "$lang", count: {$sum: 1}}},
+    {$sort: {count: -1}},
+    {$limit: 10}
+])
+
+db.collection.aggregate([
+    {$match: {"entities.urls": {$exists: true}}},
+    {$group: {_id: "$lang", count: {$sum: 1}}},
+    {$sort: {count: -1}},
+    {$limit: 10}
+])
+
+db.collection.aggregate([
+    {$match: {"entities.user_mentions": {$exists: true}}},
+    {$group: {_id: "$lang", count: {$sum: 1}}},
+    {$sort: {count: -1}},
+    {$limit: 10}
+])
 
 2. Qué idioma base es el que más hashtags usa en sus tuits?
 
