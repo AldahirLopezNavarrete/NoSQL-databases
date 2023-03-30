@@ -60,7 +60,7 @@ db.restaurants.find({}, {cuisine: 1, name: 1, restaurant_id: 1})
 3. Escribe una función find() para mostrar los campos restaurant_id, nombre, municipio y cocina, pero excluya el campo \_id para todos los documentos de la colección restaurant.
 
 #+begin_src js
-db.restaurants.find({}, {cuisine: 1, name: 1, restaurant_id: 1, _id: 0})
+
 #+end_src
 
 
@@ -495,15 +495,21 @@ Usando la colección de ~tweets~ en la BD ~trainingsessions~ vamos a responder l
 1. Qué idiomas base son los que más tuitean con hashtags? Cuál con URLs? Y con @?
 Para mostrar los idiomas base primero haremos un 'join' usando lookup entre primarydialects y languagenames
 Y llamaremos a esta nueva coleccion idiomasconlang
+#+begin_src js
 db.languagenames.aggregate([ { $lookup: { from: 'primarydialects', localField: 'locale', foreignField: 'locale', as: 'langlocale' } }, {$out: 'idiomasconlang'}])
+#+end_src
 
 Primero filtramos los tweets que tienen hastags, urls o @, luego agrupamos por idioma y contamos cuantos hay de cada uno. Finalmente ordenamos de mayor a menor y mostramos el primero.
 
 Para los hashtags: 
+#+begin_src js
 db.tweets.aggregate([ {$match: {text: /#/}}, {$project: {_id: 0, 'user.lang':1}}, {$group: {_id: '$user.lang', conteo: {$sum: 1}}}, {$sort: {conteo: -1}}, {$limit: 1}, { $lookup: { from: 'idiomasconlang', localField: '_id', foreignField: 'langlocale.lang', as: 'idiomas' } }, {$project: {_id: 1, conteo: 1, 'idiomas.languages':1}}]) 
+#+end_src
 
 Para las urls:
+#+begin_src js 
 db.tweets.aggregate([ {$match: {text: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i}}, {$project: {_id: 0, 'user.lang':1}}, {$group: {_id: '$user.lang', conteo: {$sum: 1}}}, {$sort: {conteo: -1}}, {$limit: 1}, { $lookup: { from: 'idiomasconlang', localField: '_id', foreignField: 'langlocale.lang', as: 'idiomas' } }, {$project: {_id: 1, conteo: 1, 'idiomas.languages':1}}]) 
+#+end_src 
 
 Para con @:
 db.tweets.aggregate([ {$match: {text: /@/}}, {$project: {_id: 0, 'user.lang':1}}, {$group: {_id: '$user.lang', conteo: {$sum: 1}}}, {$sort: {conteo: -1}}, {$limit: 1}, { $lookup: { from: 'idiomasconlang', localField: '_id', foreignField: 'langlocale.lang', as: 'idiomas' } }, {$project: {_id: 1, conteo: 1, 'idiomas.languages':1}}])
