@@ -496,7 +496,8 @@ Usando la colección de ~tweets~ en la BD ~trainingsessions~ vamos a responder l
 Para mostrar los idiomas base primero haremos un 'join' usando lookup entre primarydialects y languagenames
 Y llamaremos a esta nueva coleccion idiomasconlang
 #+begin_src js
-db.languagenames.aggregate([ { $lookup: { from: 'primarydialects', localField: 'locale', foreignField: 'locale', as: 'langlocale' } }, {$out: 'idiomasconlang'}])
+db.languagenames.aggregate([ { $lookup: { from: 'primarydialects', localField: 'locale', foreignField: 'locale', as: 'langlocale' } }, 
+{$out: 'idiomasconlang'}])
 #+end_src
 
 Primero filtramos los tweets que tienen hastags, urls o @, luego agrupamos por idioma y contamos cuantos hay de cada uno. Finalmente ordenamos de mayor a menor y mostramos el primero.
