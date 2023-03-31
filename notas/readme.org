@@ -41,25 +41,7 @@ for pokemon in data:
 De la base de datos de los 151 pokemons, me dió curiosidad saber lo siguiente:
 
 *** ¿Cuál es la distribución de los tipos de pokemon?
-[
-  { count: 33, type: 'poison' },
-  { count: 32, type: 'water' },
-  { count: 22, type: 'normal' },
-  { count: 19, type: 'flying' },
-  { count: 14, type: 'ground' },
-  { count: 14, type: 'grass' },
-  { count: 14, type: 'psychic' },
-  { count: 12, type: 'bug' },
-  { count: 12, type: 'fire' },
-  { count: 11, type: 'rock' },
-  { count: 9, type: 'electric' },
-  { count: 8, type: 'fighting' },
-  { count: 5, type: 'fairy' },
-  { count: 5, type: 'ice' },
-  { count: 3, type: 'ghost' },
-  { count: 3, type: 'dragon' },
-  { count: 2, type: 'steel' }
-]
+
 #+begin_src js
 db.pk.aggregate([
     {"$unwind": "$types"},
@@ -68,27 +50,8 @@ db.pk.aggregate([
     {"$sort": {"count": -1}}
 ])
 #+end_src
-*** ¿Por tipo de pokemon, cuál es el peso promedio de los pokemones?
-[
-  { avg_weight: 1137, type: 'ice' },
-  { avg_weight: 930.4545454545455, type: 'rock' },
-  { avg_weight: 799.3571428571429, type: 'ground' },
-  { avg_weight: 766, type: 'dragon' },
-  { avg_weight: 612.4736842105264, type: 'flying' },
-  { avg_weight: 550.0714285714286, type: 'psychic' },
-  { avg_weight: 542.5, type: 'fighting' },
-  { avg_weight: 536.75, type: 'water' },
-  { avg_weight: 500.8636363636364, type: 'normal' },
-  { avg_weight: 480.25, type: 'fire' },
-  { avg_weight: 330, type: 'steel' },
-  { avg_weight: 317.8888888888889, type: 'electric' },
-  { avg_weight: 264.85714285714283, type: 'grass' },
-  { avg_weight: 239, type: 'fairy' },
-  { avg_weight: 238.54545454545453, type: 'poison' },
-  { avg_weight: 229.91666666666666, type: 'bug' },
-  { avg_weight: 135.66666666666666, type: 'ghost' }
-]
 
+*** ¿Por tipo de pokemon, cuál es el peso promedio de los pokemones?
 #+begin_src js
 db.pk.aggregate([
     {"$unwind": "$types"},
@@ -103,21 +66,28 @@ db.pk.aggregate([
 *** Inserta la BD que esta en [[https://github.com/neelabalan/mongodb-sample-dataset/blob/main/sample_airbnb/listingsAndReviews.json][esta liga]] a la BD ~airbnb~, en la colección ~reviews~.
 
 Con esa bd se pregunta lo siguiente:
-
 *** ¿Cuáles son las amenidades más comunes?
 
 #+begin_src js
-  // Inserte su respuesta acá
+  db.reviews.aggregate([
+  { $unwind: "$amenities" },
+  { $group: { _id: "$amenities", count: { $sum: 1 } } },
+  { $sort: { count: -1 } },
+  { $limit: 10 }
+])
 #+end_src
 
 *** Por país, ¿Cuál es el número promedio de cuartos?
-
 #+begin_src js
-  // Inserte su respuesta acá
+db.reviews.aggregate([
+  { $group: { _id: "$address.country", avgBedrooms: { $avg: "$bedrooms" } } }
+])
+
 #+end_src
 
 *** Por tipo de propiedad ¿Cuál es el score promedio de las propiedades?
-
 #+begin_src js
-  // Inserte respuesta acá
+db.reviews.aggregate([
+  { $group: { _id: "$property_type", average_score: { $avg: "$review_scores.review_scores_rating" } } }
+])
 #+end_src
