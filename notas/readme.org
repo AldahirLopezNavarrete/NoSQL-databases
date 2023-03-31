@@ -1,0 +1,57 @@
+[![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-f4981d0f882b2a3f0472912d15f9806d57e124e0fc890972558857b51b24a6f9.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=10697918)
+#+TITLE: Examen Parcial Primavera 2023
+#+AUTHOR: Prof. Miguel Angel Escalante Serrato
+#+EMAIL:  miguel.escalante@itam.mx
+#+DATE: 30-Mar-2023
+#+STARTUP: showall
+
+
+* Teoría
+
+** Llenar el Google Forms con las preguntas teóricas en la [[https://forms.gle/rB6qHLnAJMXgisVx6][siguiente liga]]:
+
+* Práctica
+
+** Mongo (pokemon)
+
+*** Inserta la base de datos de pokemones, con python desde la API a la bd ~pkdx~, en la colección ~pk~.
+
+#+begin_src python
+# Inserte código python acá
+#+end_src
+
+De la base de datos de los 151 pokemons, me dió curiosidad saber lo siguiente:
+
+*** ¿Cuál es la distribución de los tipos de pokemon?
+
+#+begin_src js
+// inserte respuesta acá
+#+end_src
+*** ¿Por tipo de pokemon, cuál es el peso promedio de los pokemones?
+
+#+begin_src js
+// inserte respuesta acá
+#+end_src
+
+** AirBnB
+*** Inserta la BD que esta en [[https://github.com/neelabalan/mongodb-sample-dataset/blob/main/sample_airbnb/listingsAndReviews.json][esta liga]] a la BD ~airbnb~, en la colección ~reviews~.
+
+Con esa bd se pregunta lo siguiente:
+
+*** ¿Cuáles son las amenidades más comunes?
+
+#+begin_src js
+  // Inserte su respuesta acá
+#+end_src
+
+*** Por país, ¿Cuál es el número promedio de cuartos?
+
+#+begin_src js
+  // Inserte su respuesta acá
+#+end_src
+
+*** Por tipo de propiedad ¿Cuál es el score promedio de las propiedades?
+
+#+begin_src js
+  // Inserte respuesta acá
+#+end_src
