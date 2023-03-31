@@ -17,20 +17,86 @@
 *** Inserta la base de datos de pokemones, con python desde la API a la bd ~pkdx~, en la colección ~pk~.
 
 #+begin_src python
-# Inserte código python acá
+from pymongo import MongoClient
+import requests
+
+client = MongoClient()
+db = client.pkdk
+pk_collection = db.pk
+
+response = requests.get("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0&fields=name,weight,types")
+data = response.json()["results"]
+
+for pokemon in data:
+    pokemon_data = requests.get(pokemon["url"]).json()
+    doc = {
+        "name": pokemon["name"],
+        "weight": pokemon_data["weight"],
+        "types": [t["type"]["name"] for t in pokemon_data["types"]]
+    }
+    pk_collection.insert_one(doc)
+    print(doc)
 #+end_src
 
 De la base de datos de los 151 pokemons, me dió curiosidad saber lo siguiente:
 
 *** ¿Cuál es la distribución de los tipos de pokemon?
-
+[
+  { count: 33, type: 'poison' },
+  { count: 32, type: 'water' },
+  { count: 22, type: 'normal' },
+  { count: 19, type: 'flying' },
+  { count: 14, type: 'ground' },
+  { count: 14, type: 'grass' },
+  { count: 14, type: 'psychic' },
+  { count: 12, type: 'bug' },
+  { count: 12, type: 'fire' },
+  { count: 11, type: 'rock' },
+  { count: 9, type: 'electric' },
+  { count: 8, type: 'fighting' },
+  { count: 5, type: 'fairy' },
+  { count: 5, type: 'ice' },
+  { count: 3, type: 'ghost' },
+  { count: 3, type: 'dragon' },
+  { count: 2, type: 'steel' }
+]
 #+begin_src js
-// inserte respuesta acá
+db.pk.aggregate([
+    {"$unwind": "$types"},
+    {"$group": {"_id": "$types", "count": {"$sum": 1}}},
+    {"$project": {"_id": 0, "type": "$_id", "count": 1}},
+    {"$sort": {"count": -1}}
+])
 #+end_src
 *** ¿Por tipo de pokemon, cuál es el peso promedio de los pokemones?
+[
+  { avg_weight: 1137, type: 'ice' },
+  { avg_weight: 930.4545454545455, type: 'rock' },
+  { avg_weight: 799.3571428571429, type: 'ground' },
+  { avg_weight: 766, type: 'dragon' },
+  { avg_weight: 612.4736842105264, type: 'flying' },
+  { avg_weight: 550.0714285714286, type: 'psychic' },
+  { avg_weight: 542.5, type: 'fighting' },
+  { avg_weight: 536.75, type: 'water' },
+  { avg_weight: 500.8636363636364, type: 'normal' },
+  { avg_weight: 480.25, type: 'fire' },
+  { avg_weight: 330, type: 'steel' },
+  { avg_weight: 317.8888888888889, type: 'electric' },
+  { avg_weight: 264.85714285714283, type: 'grass' },
+  { avg_weight: 239, type: 'fairy' },
+  { avg_weight: 238.54545454545453, type: 'poison' },
+  { avg_weight: 229.91666666666666, type: 'bug' },
+  { avg_weight: 135.66666666666666, type: 'ghost' }
+]
 
 #+begin_src js
-// inserte respuesta acá
+db.pk.aggregate([
+    {"$unwind": "$types"},
+    {"$group": {"_id": "$types", "avg_weight": {"$avg": "$weight"}}},
+    {"$project": {"_id": 0, "type": "$_id", "avg_weight": 1}},
+    {"$sort": {"avg_weight": -1}}
+])
+
 #+end_src
 
 ** AirBnB
